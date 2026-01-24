@@ -21,10 +21,10 @@ class PriorityQueue:
 
 
     def peek(self):
-        # returns a reference of the highest priority object
+        # returns a reference of the highest priority object (None if the queue is empty)
         if self._size > 0:
             return self._heap[0]
-        raise self.QueueException("Queue is empty")
+        return None
 
 
     def isEmpty(self) -> bool:
