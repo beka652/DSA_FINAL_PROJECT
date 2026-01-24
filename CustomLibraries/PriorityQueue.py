@@ -25,6 +25,10 @@ class PriorityQueue:
         if self._size > 0:
             return self._heap[0]
         raise self.QueueException("Queue is empty")
+
+
+    def isEmpty(self) -> bool:
+        return self._size == 0
             
 
 
@@ -103,7 +107,7 @@ class PriorityQueue:
 
     def _highest_priority_child_index(self, parent_index: int) -> int:
         # returns the index of the child with the highest priority given the index of the parent (if the parent is a leaf node it returns -1)
-        
+
         left_child_index = 2 * parent_index + 1
         right_child_index = 2* parent_index + 2
         last_index = self._size -1
