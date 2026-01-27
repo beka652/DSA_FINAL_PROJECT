@@ -11,11 +11,11 @@ class PriorityQueue:
     class QueueException(Exception):
         pass
 
-    def __init__(self, priority_function, iter: list = []) -> None:
+    def __init__(self, priority_function, cont: list = []) -> None:
         
-        self._size = len(iter)
+        self._size = len(cont)
         self._priority = priority_function
-        self._heap = iter
+        self._heap = cont
         if self._heap:
             self._heapify()
 
@@ -122,6 +122,11 @@ class PriorityQueue:
 
             return left_child_index if left_priority > right_priority else right_child_index
 
+
+
+    def transform(self, func) -> None:
+        for i in self._heap:
+            func(i)
 
 
     def print(self):
