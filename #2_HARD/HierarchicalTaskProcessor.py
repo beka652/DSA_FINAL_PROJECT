@@ -1,34 +1,35 @@
-from CustomLibraries import PriorityQueue, LinkedQueue
+from CustomLibraries.LinkedQueue import LinkedQueue
+from CustomLibraries.PriorityQueue import PriorityQueue
 
 
 class TaskProcessor:
+    A_tier = 2  # allocated time for tasks in queue A
+    B_tier = 4  # allocated time for tasks in queue B
+    C_tier = float("inf")
 
-    A_tier = 2 # allocated time for tasks in queue A
-    B_tier = 4 # allocated time for tasks in queue B
-    C_tier = float('inf')
-    
-
-
+    #  ----------------- Private class to represent each task -------------- #
     class _Task:
-    
         def __init__(self, task_id, total_work_needed, arrival_time):
-            self._id : int | str = task_id # the id of the work
-            self._arrival_time = arrival_time # the arrival time of the task
-            self._remaing_work = total_work_needed # the remaining work left
-            self._due_work = 2 # allowed amount of work. depends on the tier the task belongs to
-            self._tier = TaskProcessor.A_tier # Type of tier
-            self._waiting_time: int= 0
-            
+            self._id: int | str = task_id  # the id of the work
+            self._arrival_time = arrival_time  # the arrival time of the task
+            self._remaing_work = total_work_needed  # the remaining work left
+            self._allowed_time = 2  # Amount of remaining work
+            self._tier = TaskProcessor.A_tier  # Type of tier
+            self._waiting_time: int = 0
 
         def key(self) -> int:
             return self._arrival_time
 
         def arrival_time(self) -> int:
-            return self.arrival_time
+            return self._arrival_time
 
         def __str__(self):
             return f"{self._id} (Remaining: {self._remaing_work})"
 
+        def __repr__(self) -> str:
+            return f"{self._id} (Remaining: {self._remaing_work})"
+
+    # --------------------------- end of Task class ----------------------------------------------#
 
     @staticmethod
     def min_priority_function(obj) -> int:
@@ -40,51 +41,47 @@ class TaskProcessor:
         key: int = obj.key()
         return key
 
-
-
-
-
-
     def __init__(self):
-        self._system_clock :int = 0
-        self._pending_area: PriorityQueue = PriorityQueue(TaskProcessor.min_priority_function) # pending area
-        self._list: list[LinkedQueue] = [LinkedQueue() for _ in range(3)] # QueueA is store at index 0, QueueB at 1, and so on.
-        self._current_task: TaskProcessor._Task | None = None # The current task being processed
-    
+        self._system_clock: int = 0
 
-    def schedule_task(self, task_id:str | int, total_work_needed: int, arrival_time: int):
+        self._pending_area: PriorityQueue = PriorityQueue(
+            TaskProcessor.min_priority_function
+        )  # pending area
+
+        self._list: list[LinkedQueue] = [
+            LinkedQueue() for _ in range(3)
+        ]  # QueueA is store at index 0, QueueB at 1, and so on.
+
+        self._current_task: TaskProcessor._Task | None = (
+            None  # The current task being processed
+        )
+
+    def schedule_task(self, task_id: str | int, total_work: int, arrival_time: int):
         # create an object for the task
-        task = TaskProcessor._Task(task_id, total_work_needed, arrival_time)
+        task = TaskProcessor._Task(task_id, total_work, arrival_time)
         self._add_task_to_pending_area(task)
 
     def _add_task_to_pending_area(self, task: TaskProcessor._Task):
         self._pending_area.enqueue(task)
-
 
     def tick(self):
         # advance the system clock by 1 unit
         self._advance_sys_clock(1)
 
         # check for arriving tasks (Pending -> Queue A)
-        self.check_for_arriving_tasks()
-
+        self._check_for_arriving_tasks()
 
         # get the selected task
-        self.set_current_task()
+        self._set_current_task()
 
-        if self._current_task is not None:
-            self._run_task()
+        self._run_task()
 
         self._age_checker()
 
     def _advance_sys_clock(self, unit: int):
         self._system_clock += unit
 
-    def status(self):
-        # print the contents of all 3 queues, system time and the pending area
-        pass
-
-    def check_for_arriving_tasks(self):
+    def _check_for_arriving_tasks(self):
         # get a reference for the top most task from the pending area
         top = self._pending_area.peek()
         queue_A = self._list[0]
@@ -100,61 +97,94 @@ class TaskProcessor:
             else:
                 break
 
-    def set_current_task(self):
+    def _set_current_task(self):
         if self._current_task is None:
             for queue in self._list:
                 if queue.peek() is not None:
                     self._current_task = queue.dequeue()
                     break
-                
+
     def _run_task(self):
-        self._current_task._remaing_work -= 1
-        self._current_task._due_work -= 1
+        if self._current_task is not None:
+            self._current_task._remaing_work -= 1
+            self._current_task._allowed_time -= 1
 
-        if self._current_task._remaing_work == 0:
-            self._current_task = None
-        elif self._current_task._due_work == 0:
-            match self._current_task._tier:
-                case TaskProcessor.A_tier:
-                    self._current_task._tier  = TaskProcessor.B_tier
-                    self._current_task._due_work = 4
-                    _list[1].enqueue(self._current_task)
-                case TaskProcessor.B_tier:
-                    self._current_task._tier = TaskProcessor.C_tier
-                    self._current_task._due_work = self._current_task._remaing_work
-                    self._list[2].enqueue(self._current_task)
+            if self._current_task._remaing_work == 0:
+                self._current_task = None
+            elif self._current_task._allowed_time == 0:
+                match self._current_task._tier:
+                    case TaskProcessor.A_tier:
+                        self._current_task._tier = TaskProcessor.B_tier
+                        self._current_task._allowed_time = 4
+                        self._list[1].enqueue(self._current_task)  # Add to Queue B
+                    case TaskProcessor.B_tier:
+                        self._current_task._tier = TaskProcessor.C_tier
+                        self._current_task._allowed_time = (
+                            self._current_task._remaing_work
+                        )
+                        self._list[2].enqueue(self._current_task)
 
-            self._current_task = None
-
+                self._current_task = None
 
     def _age_checker(self):
+        queue_c = self._list[2]
+
+        # function for incrementing the waiting time of a task
         def incrememt_wait_time(task):
             task._waiting_time += 1
-        self._list[2].transform(incrememt_wait_time)
 
-        queue_c = self._list[2]
-        front = queue_c.peek()
+        # Increment the waiting time of the tasks in queue c
+        queue_c.transform(incrememt_wait_time)
+        task = queue_c.peek()
 
-        while peek is not None:
-            if peek._waiting_time > 15:
-                task = queue_c.pop()
-                task._tier = TaskProcessor.A_tier
-                task._due_work = 2
+        while task is not None:
+            if task._waiting_time > 15:
+                new_task = queue_c.dequeue()
+                new_task._tier = TaskProcessor.A_tier
+                task._allowed_time = 2
                 task._waiting_time = 0
                 self._list[0].enqueue(task)
-                front = queue_c.peek()
+                task = queue_c.peek()
             else:
                 break
 
-
-
     def status(self):
-        print(self._system_clock)
-        print("Pending: ", [t.__str__() for t in self._pending_area])
-        print("Queue A"), [t.__str__() for t in self._list[0]]
-        print("Queue B"), [t.__str__() for t in self._list[1]]
-        print("Queue C"), [t.__str__() for t in self._list[2]]
-        print(f"Processing {self._current_task._id}")
+        print("Time: ", self._system_clock)
+        print("Pending: ", self._pending_area)
+        print("Queue A", self._list[0])
+        print("Queue B", self._list[1])
+        print("Queue C", self._list[2])
+        print(
+            f"Processing {self._current_task._id}"
+        ) if self._current_task is not None else print("Processing : None")
 
 
-        
+if __name__ == "__main__":
+    tp = TaskProcessor()
+    # scheduleTask(id, work , arrival)
+    tp.schedule_task("T1", 10, 0)
+    tp.schedule_task("T2", 4, 2)
+
+    tp.status()
+    print()
+
+    tp.tick()
+    tp.status()
+    print()
+
+    tp.tick()
+    tp.status()
+    print()
+    tp.tick()
+    tp.status()
+    print()
+
+    tp.tick()
+    tp.status()
+
+    print()
+
+    tp.tick()
+    tp.status()
+
+    # tp.status()
