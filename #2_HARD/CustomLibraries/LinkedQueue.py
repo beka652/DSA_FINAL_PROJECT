@@ -61,20 +61,3 @@ class LinkedQueue:
             curr = curr._next
 
         return " -> ".join(cont)
-
-
-if __name__ == "__main__":
-    q = LinkedQueue()
-
-    class t:
-        def __init__(self, v) -> None:
-            self.v = v
-
-        def __str__(self):
-            return str(self.v)
-
-    q.enqueue(t(1))
-    q.enqueue(t(2))
-    q.enqueue(3)
-
-    print(q)

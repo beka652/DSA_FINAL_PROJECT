@@ -13,8 +13,8 @@ class PriorityQueue:
 
     def __init__(self, priority_function, cont: list = []) -> None:
         self._size = len(cont)
-        self._priority = priority_function
-        self._heap = cont
+        self._priority = priority_function  # the function used for calculating the priority of each itme
+        self._heap = cont  # the array storing the elements
         if self._heap:
             self._heapify()
 
@@ -23,7 +23,7 @@ class PriorityQueue:
 
     def peek(self):
         # returns a reference of the highest priority object (None if the queue is empty)
-        if self._size > 0:
+        if len(self) > 0:
             return self._heap[0]
         return None
 
@@ -41,24 +41,24 @@ class PriorityQueue:
         # adds an object to the queue
         self._heap.append(obj)
         self._size += 1
-        self._bubble_up(self._size - 1)
+        self._bubble_up(len(self) - 1)
 
     def _bubble_up(self, index: int) -> None:
         # positions the object with the given index to its rightful place within the queue/ heap.
 
-        new = self._heap[index]
+        new_item = self._heap[index]
 
         while index > 0:
             parent_index = (index - 1) // 2
             parent = self._heap[parent_index]
 
-            if self._priority(new) > self._priority(parent):
+            if self._priority(new_item) > self._priority(parent):
                 self._heap[index] = parent
                 index = parent_index
             else:
                 break
 
-        self._heap[index] = new
+        self._heap[index] = new_item
 
     def dequeue(self):
         # removes the object with the highest priority from the queue and returns it (else raises an error if the queue is empty)
@@ -99,7 +99,7 @@ class PriorityQueue:
 
         left_child_index = 2 * parent_index + 1
         right_child_index = 2 * parent_index + 2
-        last_index = self._size - 1
+        last_index = len(self) - 1
 
         if left_child_index > last_index:
             return -1
@@ -121,21 +121,3 @@ class PriorityQueue:
 
     def __str__(self):
         return str(self._heap)
-
-    def __repr__(self):
-        return str(self._heap)
-
-
-if __name__ == "__main__":
-    pq = PriorityQueue(priority_function=lambda x: -x)
-
-    import random
-
-    for x in range(7):
-        pq.enqueue(random.randint(-100, 100))
-
-    pq.print()
-
-    pq.dequeue()
-
-    pq.print()
