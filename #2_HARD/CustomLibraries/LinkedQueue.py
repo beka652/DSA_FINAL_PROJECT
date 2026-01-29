@@ -8,9 +8,9 @@ class LinkedQueue:
     # --------------------------------------#
 
     def __init__(self) -> None:
-        self._front: LinkedQueue._node | None = None
-        self._rear: LinkedQueue._node | None = None
-        self._size: int = 0
+        self._front = None
+        self._rear = None
+        self._size = 0
 
     def isEmpty(self) -> bool:
         return len(self) == 0
@@ -19,25 +19,24 @@ class LinkedQueue:
         return self._size
 
     def enqueue(self, elem) -> None:
-        node = LinkedQueue._node(elem)
+        new_node = LinkedQueue._node(elem)
         if self.isEmpty():
-            self._front = self._rear = node
+            self._front = self._rear = new_node
         else:
-            self._rear._next = node
-            self._rear = node
+            self._rear._next = new_node
+            self._rear = new_node
 
         self._size += 1
 
     def dequeue(self):
         if not self.isEmpty():
-            node = self._front
-            self._size -= 1
-
+            to_remove = self._front
             if len(self) == 1:
                 self._rear = self._front = None
             else:
                 self._front = self._front._next
-            return node._elem
+            self._size -= 1
+            return to_remove._elem
         raise Exception("Queue is empty")
 
     def peek(self):
@@ -62,3 +61,20 @@ class LinkedQueue:
             curr = curr._next
 
         return " -> ".join(cont)
+
+
+if __name__ == "__main__":
+    q = LinkedQueue()
+
+    class t:
+        def __init__(self, v) -> None:
+            self.v = v
+
+        def __str__(self):
+            return str(self.v)
+
+    q.enqueue(t(1))
+    q.enqueue(t(2))
+    q.enqueue(3)
+
+    print(q)

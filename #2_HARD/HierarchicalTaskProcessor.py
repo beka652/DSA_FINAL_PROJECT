@@ -42,19 +42,17 @@ class TaskProcessor:
         return key
 
     def __init__(self):
-        self._system_clock: int = 0
+        self._system_clock = 0
 
-        self._pending_area: PriorityQueue = PriorityQueue(
+        self._pending_area = PriorityQueue(
             TaskProcessor.min_priority_function
         )  # pending area
 
-        self._list: list[LinkedQueue] = [
+        self._list = [
             LinkedQueue() for _ in range(3)
         ]  # QueueA is store at index 0, QueueB at 1, and so on.
 
-        self._current_task: TaskProcessor._Task | None = (
-            None  # The current task being processed
-        )
+        self._current_task = None  # The current task being processed
 
     def schedule_task(self, task_id: str | int, total_work: int, arrival_time: int):
         # create an object for the task
@@ -151,9 +149,9 @@ class TaskProcessor:
     def status(self):
         print("Time: ", self._system_clock)
         print("Pending: ", self._pending_area)
-        print("Queue A", self._list[0])
-        print("Queue B", self._list[1])
-        print("Queue C", self._list[2])
+        print("Queue A: ", self._list[0])
+        print("Queue B: ", self._list[1])
+        print("Queue C: ", self._list[2])
         print(
             f"Processing {self._current_task._id}"
         ) if self._current_task is not None else print("Processing : None")
@@ -163,28 +161,12 @@ if __name__ == "__main__":
     tp = TaskProcessor()
     # scheduleTask(id, work , arrival)
     tp.schedule_task("T1", 10, 0)
-    tp.schedule_task("T2", 4, 2)
+    tp.schedule_task("T2", 10, 1)
+    tp.schedule_task("T3", 4, 2)
 
-    tp.status()
-    print()
-
-    tp.tick()
-    tp.status()
-    print()
-
-    tp.tick()
-    tp.status()
-    print()
-    tp.tick()
-    tp.status()
-    print()
-
-    tp.tick()
     tp.status()
 
     print()
 
     tp.tick()
     tp.status()
-
-    # tp.status()
