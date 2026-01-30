@@ -12,10 +12,10 @@ class TaskProcessor:
         def __init__(self, task_id, total_work_needed, arrival_time):
             self._id: int | str = task_id  # the id of the work
             self._arrival_time = arrival_time  # the arrival time of the task
-            self._remaing_work = total_work_needed  # the remaining work left
-            self._allowed_time = 2  # Amount of remaining work
+            self._remaining_work = total_work_needed  # the remaining work left
+            self._allowed_time_per_tier = 2  # Amount of remaining work
             self._tier = TaskProcessor.A_tier  # Type of tier
-            self._waiting_time: int = 0
+            self._waiting_time = 0
 
         def key(self) -> int:
             return self._arrival_time
@@ -24,21 +24,21 @@ class TaskProcessor:
             return self._arrival_time
 
         def __str__(self):
-            return f"{self._id} (Remaining: {self._remaing_work})"
+            return f"{self._id}, (Remaining: {self._remaining_work})"
 
-        def __repr__(self) -> str:
-            return f"{self._id} (Remaining: {self._remaing_work})"
+        def __repr__(self):
+            return f"{self._id}, (Remaining: {self._remaining_work})"
 
     # --------------------------- end of Task class ----------------------------------------------#
 
     @staticmethod
     def min_priority_function(obj) -> int:
-        key: int = obj.key()
+        key = obj.key()
         return -key
 
     @staticmethod
     def max_priority_function(obj) -> int:
-        key: int = obj.key()
+        key = obj.key()
         return key
 
     def __init__(self):
@@ -104,21 +104,21 @@ class TaskProcessor:
 
     def _run_task(self):
         if self._current_task is not None:
-            self._current_task._remaing_work -= 1
-            self._current_task._allowed_time -= 1
+            self._current_task._remaining_work -= 1
+            self._current_task._allowed_time_per_tier -= 1
 
-            if self._current_task._remaing_work == 0:
+            if self._current_task._remaining_work == 0:
                 self._current_task = None
-            elif self._current_task._allowed_time == 0:
+            elif self._current_task._allowed_time_per_tier == 0:
                 match self._current_task._tier:
                     case TaskProcessor.A_tier:
                         self._current_task._tier = TaskProcessor.B_tier
-                        self._current_task._allowed_time = 4
+                        self._current_task._allowed_time_per_tier = 4
                         self._list[1].enqueue(self._current_task)  # Add to Queue B
                     case TaskProcessor.B_tier:
                         self._current_task._tier = TaskProcessor.C_tier
-                        self._current_task._allowed_time = (
-                            self._current_task._remaing_work
+                        self._current_task._allowed_time_per_tier = (
+                            self._current_task._remaining_work
                         )
                         self._list[2].enqueue(self._current_task)
 
@@ -139,7 +139,7 @@ class TaskProcessor:
             if task._waiting_time > 15:
                 new_task = queue_c.dequeue()
                 new_task._tier = TaskProcessor.A_tier
-                task._allowed_time = 2
+                task._allowed_time_per_tier = 2
                 task._waiting_time = 0
                 self._list[0].enqueue(task)
                 task = queue_c.peek()
@@ -153,7 +153,7 @@ class TaskProcessor:
         print("Queue B: ", self._list[1])
         print("Queue C: ", self._list[2])
         print(
-            f"Processing {self._current_task._id}"
+            f"Processing: {self._current_task._id, self._current_task._remaining_work}"
         ) if self._current_task is not None else print("Processing : None")
 
 
@@ -161,12 +161,10 @@ if __name__ == "__main__":
     tp = TaskProcessor()
     # scheduleTask(id, work , arrival)
     tp.schedule_task("T1", 10, 0)
-    tp.schedule_task("T2", 10, 1)
-    tp.schedule_task("T3", 4, 2)
-
-    tp.status()
-
-    print()
-
+    tp.schedule_task("T2", 4, 2)
+    tp.tick()
+    tp.tick()
+    tp.tick()
+    tp.tick()
     tp.tick()
     tp.status()
