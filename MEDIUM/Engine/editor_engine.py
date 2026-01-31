@@ -55,3 +55,33 @@ class TextEditor:
         if not is_undoing:
             self.redo_stack.clear()
             self._handle_batching('DELETE', char)
+
+    def move_cursor(self, direction):
+        if direction == "left" and self.cursor.prev != self.head:
+            self.cursor = self.cursor.prev
+        elif direction == "right" and self.cursor != self.tail:
+            self.cursor = self.cursor.next
+    
+    def undo(self):
+        if not self.undo_stack: return
+        action = self.undo_stack.pop()
+        self.redo_stack.append(action)
+
+        if action.type == 'WRITE':
+            for _ in range(len(action.data)):
+                self._remove_node(self.cursor.prev)
+        else:
+            for char in action.data:
+                self._insert_node(char, self.cursor)
+
+    def redo(self):
+        if not self.redo_stack: return
+        action = self.redo_stack.pop()
+        self.undo_stack.append(action)
+
+        if action.type == 'WRITE':
+            for char in action.data:
+                self._insert_node(char, self.cursor)
+        else:
+            for _ in range(len(action.data)):
+                self._remove_node(self.cursor.prev)
