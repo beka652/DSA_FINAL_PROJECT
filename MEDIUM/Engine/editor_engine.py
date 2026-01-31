@@ -36,6 +36,7 @@ class TextEditor:
                 self.undo_stack[-1].timestamp = time.time()
             else:
                 new_action = Action(action_type)
+                new_action.data.append(char)
                 self.undo_stack.append(new_action)
 
     def write(self, char, is_undoing=False):
