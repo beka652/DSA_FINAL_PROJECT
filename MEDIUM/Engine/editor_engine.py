@@ -11,6 +11,7 @@ class TextEditor:
         self.cursor = self.tail  
         self.undo_stack = []
         self.redo_stack = []
+        
     """below this are internal helper """     
     def _insert_node(self, char, position_node):
             new_node = Node(char)
@@ -23,7 +24,6 @@ class TextEditor:
             return new_node
         
     def _remove_node(self, node):
-            """Internal helper to remove a specific node."""
             if node.value is None: return None
             p, n = node.prev, node.next
             p.next = n
@@ -37,3 +37,21 @@ class TextEditor:
             else:
                 new_action = Action(action_type)
                 self.undo_stack.append(new_action)
+
+    def write(self, char, is_undoing=False):
+        if not is_undoing:
+            self.redo_stack.clear()
+            self._handle_batching('WRITE', char)
+            
+        self._insert_node(char, self.cursor)
+
+    def delete(self, is_undoing=False):
+        target = self.cursor.prev
+        if target == self.head:
+            return
+
+        char = self._remove_node(target)
+        
+        if not is_undoing:
+            self.redo_stack.clear()
+            self._handle_batching('DELETE', char)
