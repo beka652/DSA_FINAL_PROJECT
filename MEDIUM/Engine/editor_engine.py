@@ -1,7 +1,5 @@
 import time
-from turtle import clear
-
-from .model import *
+from model import *
 
 
 class TextEditor:
@@ -94,14 +92,14 @@ class TextEditor:
             for _ in range(len(action.data)):
                 self._remove_node(self.cursor.prev)
 
-        def display(self):
-            res = []
-            curr = self.head.next
-            while curr != self.tail:
-                if curr == self.cursor:
-                    res.append("|")
-                res.append(str(curr.value))
-                curr = curr.next
-            if self.cursor == self.tail:
+    def display(self):
+        res = []
+        curr = self.head.next
+        while curr != self.tail:
+            if curr == self.cursor:
                 res.append("|")
-            print("Display: " + "".join(res))
+            res.append(str(curr.value))
+            curr = curr.next
+        if self.cursor == self.tail:
+            res.append("|")
+        print("Display: " + "".join(res))
