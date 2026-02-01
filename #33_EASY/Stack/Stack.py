@@ -1,9 +1,8 @@
 from collections import deque
 
-
+"""Custom class that use python deque for internal implementation that provides a generic interface for deque"""
 
 class Stack:
-  """Custom class that use python deque for internal implementation that provides a generic interface for deque"""
 
     def __init__(self) -> None:
         self._stack = deque()
