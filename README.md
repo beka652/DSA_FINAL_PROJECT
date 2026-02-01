@@ -8,9 +8,9 @@ This repository contains three standalone projects:
 
 | Directory | Project | Brief description |
 |-----------|---------|-------------------|
-| **`EASY/`** | Bracket Syntax Validator | CLI tool that validates balanced brackets `()`, `[]`, `{}` using a **stack**. |
-| **`MEDIUM/`** | Advanced Text Editor Engine | Text-editor core with a **doubly-linked list**, cursor-based editing, and undo/redo batching. |
-| **`#2_HARD/`** | Hierarchical Task Processor | Multi-level **feedback queue** scheduler (Queues A/B/C) with custom **LinkedQueue** and **PriorityQueue**. |
+| **`#33_EASY/`** | Bracket Syntax Validator | CLI tool that validates balanced brackets `()`, `[]`, `{}` using a **stack**. |
+| **`#01_MEDIUM/`** | Advanced Text Editor Engine | Text-editor core with a **doubly-linked list**, cursor-based editing, and undo/redo batching. |
+| **`#02_HARD/`** | Hierarchical Task Processor | Multi-level **feedback queue** scheduler (Queues A/B/C) with custom **LinkedQueue** and **PriorityQueue**. |
 
 ## Learn More About Each Project
 
@@ -23,9 +23,9 @@ Each subproject has its own documentation and structure. **Navigate to the direc
 
 | Go to | README |
 |-------|--------|
-| **[EASY/](EASY/)** | [EASY/README.md](EASY/README.md) — Bracket validator usage, behavior, and Stack usage. |
-| **[MEDIUM/](MEDIUM/)** | [MEDIUM/README.MD](MEDIUM/README.MD) — Text editor engine, folder structure, and operations. |
-| **[#2_HARD/](#2_HARD/)** | [#2_HARD/README.md](#2_HARD/README.md) — Task processor, scheduling algorithm, and commands. |
+| **[#33_EASY/](#33_EASY/)** | [#33_EASY/README.md](#33_EASY/README.md) — Bracket validator usage, behavior, and Stack usage. |
+| **[#01_MEDIUM/](#01_MEDIUM/)** | [#01_MEDIUM/README.MD](#01_MEDIUM/README.MD) — Text editor engine, folder structure, and operations. |
+| **[#02_HARD/](#02_HARD/)** | [#02_HARD/README.md](#02_HARD/README.md) — Task processor, scheduling algorithm, and commands. |
 
 ## Requirements
 
@@ -37,14 +37,14 @@ Each subproject has its own documentation and structure. **Navigate to the direc
 From the project root you can run each project’s entry point:
 
 ```bash
-# EASY — Bracket validator
-python -m EASY.validator validate "<your_bracket_string>"
+# #33_EASY — Bracket validator
+python "#33_EASY/validator.py" validate "<your_bracket_string>"
 
-# MEDIUM — Text editor demo
-python MEDIUM/main.py
+# #01_MEDIUM — Text editor demo
+python "#01_MEDIUM/main.py"
 
-# #2_HARD — Hierarchical task processor (interactive CLI)
-python "#2_HARD/main.py"
+# #02_HARD — Hierarchical task processor (interactive CLI)
+python "#02_HARD/main.py"
 ```
 
 For full usage, examples, and behavior, see the README in the corresponding directory.
