@@ -73,12 +73,14 @@ class TaskProcessor:
         # get the selected task
         self._set_current_task()
 
+        # advance the system clock by 1 unit
+        self._advance_sys_clock(1)
+
         self._run_task()
 
         self._age_checker()
 
-        # advance the system clock by 1 unit
-        self._advance_sys_clock(1)
+        
 
     def _advance_sys_clock(self, unit: int):
         self._system_clock += unit
