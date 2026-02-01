@@ -2,6 +2,8 @@
 
 A collection of **Data Structures & Algorithms** projects of varying difficulty. Each subproject demonstrates core data structures (stacks, linked lists, queues, heaps) in practical applications.
 
+**Authors:** Bereket Nebiyu, Natnael Fikire, and Heyor Henok
+
 ## Overview
 
 This repository contains three standalone projects:
