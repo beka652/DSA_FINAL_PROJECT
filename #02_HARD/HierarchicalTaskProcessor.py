@@ -57,14 +57,15 @@ class TaskProcessor:
     def schedule_task(self, task_id: str | int, total_work: int, arrival_time: int):
         # create an object for the task
         task = TaskProcessor._Task(task_id, total_work, arrival_time)
+
+        
         self._add_task_to_pending_area(task)
 
     def _add_task_to_pending_area(self, task: TaskProcessor._Task):
         self._pending_area.enqueue(task)
 
     def tick(self):
-        # advance the system clock by 1 unit
-        self._advance_sys_clock(1)
+        
 
         # check for arriving tasks (Pending -> Queue A)
         self._check_for_arriving_tasks()
@@ -75,6 +76,9 @@ class TaskProcessor:
         self._run_task()
 
         self._age_checker()
+
+        # advance the system clock by 1 unit
+        self._advance_sys_clock(1)
 
     def _advance_sys_clock(self, unit: int):
         self._system_clock += unit
