@@ -1,4 +1,5 @@
 from Stack.Stack import Stack
+import argparse
 
 
 def validate(syntax):
@@ -34,3 +35,37 @@ def validate(syntax):
         print(f"Error: unclosed opening -> {x[0]} at index {x[1]}")
     else:
         print("valid")
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="validator",
+        description="Validate bracket syntax"
+    )
+
+    subparsers = parser.add_subparsers(dest="command")
+
+    # validate command
+    validate_parser = subparsers.add_parser(
+        "validate",
+        help='Validate a syntax string (e.g. "[][]")'
+    )
+    validate_parser.add_argument(
+        "syntax",
+        help='String to validate'
+    )
+
+    args = parser.parse_args()
+
+    # If no command is given, show help
+    if args.command is None:
+        parser.print_help()
+        return
+
+    # Only supported command
+    if args.command == "validate":
+        validate(args.syntax)
+
+
+if __name__ == "__main__":
+    main()
+
