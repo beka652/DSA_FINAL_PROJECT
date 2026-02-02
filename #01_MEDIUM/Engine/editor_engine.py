@@ -1,5 +1,5 @@
 import time
-from model import *
+from .model import *
 
 
 class TextEditor:
